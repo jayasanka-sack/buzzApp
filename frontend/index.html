@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
+    <title>Document</title>
+    <style>
+        .container{
+            background-image: url("frontend/bg.jpg");
+            height: 100vh;
+            width: 100%;
+            background-position: top center;
+            background-size: auto 100%;
+            background-repeat: no-repeat;
+            display: flex;
+        }
+
+        .chatbox {
+            width: 600px;
+            height: 300px;
+            margin: 200px auto auto auto;
+        }
+
+        .messages {
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+        .input {
+            width: 100%;
+            display: flex;
+        }
+
+        .message {
+            flex-grow: 1;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="chatbox">
+        <div class="messages" id="messages">
+
+        </div>
+        <div class="input">
+            <input type="text" class="message" id="message" placeholder="Type a message">
+            <button class="send" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+    const socket = io();
+    const username = prompt("what's your name?")
+
+    document.getElementById("message").addEventListener("keyup", function(event) {
+      if (event.key === "Enter") {
+        sendMessage()
+      }
+    })
+
+    const sendMessage = () => {
+     const messageInput = document.getElementById("message");
+      const data = {
+        username,
+        message: messageInput.value
+      }
+
+      socket.emit("send_message", data)
+      messageInput.value = ''
+    }
+
+    socket.on("new_message", (data)=> {
+      const messageHtml = `<p>${data.username}: ${data.message}</p>`
+
+      const messagesBox = document.getElementById("messages")
+      messagesBox.innerHTML += messageHtml
+      messagesBox.scrollTop = messagesBox.scrollHeight
+
+    })
+
+</script>
+</html>
+
