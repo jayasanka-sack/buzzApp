@@ -83,11 +83,11 @@
 
     };
 
-    //make it scroll to the latest message 
     socket.on("new_message", (data) => {
         const messageHtml = `<p class="other-message">${data.username}: ${data.message}</p>`;
         const messagesBox = document.getElementById("messages");
-        messagesBox.innerHTML += messageHtml;
+        messagesBox.innerHTML += messageHtml;   
+        //make it scroll to the latest message 
         messagesBox.scrollTop = messagesBox.scrollHeight;
     });
 </script>
