@@ -1,20 +1,21 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_socketio import SocketIO
 
 app = Flask(__name__, static_folder='frontend')
-socket = SocketIO(app)
-socket.init_app(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 @app.route('/')
 def index():
     return app.send_static_file('index.html')
 
-@socket.event
-def send_message(data):
-    print(data)
-    socket.emit("new_message", data)
+@app.route('/<path:path>')
+def static_files(path):
+    return send_from_directory('frontend', path)
 
+@socketio.on('send_message')
+def handle_send_message(data):
+    print(data)
+    socketio.emit("new_message", data)
 
 if __name__ == '__main__':
-    socket.run(app, port=6001)
-
+    socketio.run(app, host='0.0.0.0', port=6003)
