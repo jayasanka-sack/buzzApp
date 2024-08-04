@@ -23,6 +23,7 @@ def sanitize_input(input):
 def handle_send_message(data):
     print(data)
     print("Sanitized data is " + sanitize_input(data["message"]))
+    data["username"] = sanitize_input(data["username"]);
     data["message"] = sanitize_input(data["message"]);
 
     socketio.emit("new_message",data)
